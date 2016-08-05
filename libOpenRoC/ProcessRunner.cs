@@ -6,6 +6,11 @@
     using System.ComponentModel;
     using Signal = System.Threading.ManualResetEventSlim;
 
+    /// <summary>
+    /// The central nerve system of OpenRoC! Handles restarting,
+    /// closing, monitoring, and etc. of a running Process. API
+    /// of this class is not thread-safe unless mentioned otherwise
+    /// </summary>
     public class ProcessRunner : IDisposable, INotifyPropertyChanged
     {
         Status currentState;
@@ -18,11 +23,38 @@
         Timer doubleCheckTimer;
         ProcessOptions options;
 
+        /// <summary>
+        /// Event propagated when Process state changes (e.g from Stopped to Running)
+        /// This is called from the UI thread and other threads
+        /// </summary>
         public Action StateChanged;
+
+        /// <summary>
+        /// Event propagated when Process options changes (e.g launch options)
+        /// /// This is called from the UI thread
+        /// </summary>
         public Action OptionsChanged;
+
+        /// <summary>
+        /// Event propagated when Process object is re-assigned internally
+        /// All accesses to ProcessRunner.Process should be renewed after
+        /// This is called from the UI thread and other threads
+        /// </summary>
         public Action ProcessChanged;
+
+        /// <summary>
+        /// Event propagated when Process is crashed or stopped
+        /// This is called from the UI thread
+        /// </summary>
         public Action ProcessCrashed;
 
+        /// <summary>
+        /// Current status of the monitored Process
+        /// Running: Process is all well and running correctly
+        /// Disabled: Process is not being monitored
+        /// Stopped: Process is stopped and not running
+        /// Invalid: Intermediate step, for internal use only
+        /// </summary>
         public enum Status
         {
             Running = 0,
@@ -31,6 +63,10 @@
             Invalid = 3
         }
 
+        /// <summary>
+        /// Current state of the Process. Assigning a new State will be
+        /// in effect the next time ProcessRunner.Monitor is called
+        /// </summary>
         public Status State
         {
             get { return currentState; }
@@ -48,12 +84,26 @@
             }
         }
 
+        /// <summary>
+        /// Native Process object. External accesses to this getter needs
+        /// to be renewed on propagation of ProcessRunner.ProcessChanged
+        /// </summary>
         public Process Process { get; private set; }
 
+        /// <summary>
+        /// A Stopwatch object holding the running time since the last time
+        /// ProcessRunner.State has been re-assigned or changed internally
+        /// </summary>
         public Stopwatch Stopwatch { get; private set; }
 
+        /// <summary>
+        /// Returns true if a Process has a GUI and false for Console based
+        /// </summary>
         public bool HasWindow { get; private set; } = false;
 
+        /// <summary>
+        /// Launch options used to instantiate ProcessRunner.Process with
+        /// </summary>
         public ProcessOptions ProcessOptions
         {
             get { return options.Clone() as ProcessOptions; }
@@ -77,35 +127,10 @@
             SetupOptions();
         }
 
-        private void SwapOptions(ProcessOptions opts)
-        {
-            Stop();
-            options = opts;
-            State = opts.InitialStateEnumValue;
-            SetupOptions();
-
-            NotifyPropertyChanged(nameof(ProcessOptions));
-        }
-
-        private void SetupOptions()
-        {
-            if (currentState == Status.Invalid)
-            {
-                currentState = Status.Stopped;
-            }
-
-            if (options.InitialStateEnumValue == Status.Running)
-                startSignal.Set();
-
-            if (options.GracePeriodEnabled)
-                gracePeriodTimer.Interval = TimeSpan.FromSeconds(options.GracePeriodDuration).TotalMilliseconds;
-
-            if (options.DoubleCheckEnabled)
-                doubleCheckTimer.Interval = TimeSpan.FromSeconds(options.DoubleCheckDuration).TotalMilliseconds;
-
-            ResetTimers();
-        }
-
+        /// <summary>
+        /// Restores the ProcessRunner.State to the previous one. It has
+        /// only memory for ONE single past state. Multiple calls are invalid
+        /// </summary>
         public void RestoreState()
         {
             if (previousState == Status.Invalid)
@@ -113,6 +138,10 @@
             else State = previousState;
         }
 
+        /// <summary>
+        /// Starts the ProcessRunner.Process immediately. It stops the Process
+        /// if it's already in the Running state
+        /// </summary>
         public void Start()
         {
             if (Process != null)
@@ -180,6 +209,9 @@
             }
         }
 
+        /// <summary>
+        /// Stops the ProcessRunner.Process immediately. No-op if already stopped.
+        /// </summary>
         public void Stop()
         {
             if (Process == null)
@@ -241,6 +273,10 @@
             }
         }
 
+        /// <summary>
+        /// Monitoring check routine (check for crashes and etc.)
+        /// This needs to be called as often as possible in UI thread
+        /// </summary>
         public void Monitor()
         {
             if (crashSignal.IsSet)
@@ -344,12 +380,45 @@
             }
         }
 
+        /// <summary>
+        /// Brings the process windows to front
+        /// </summary>
+        /// <param name="aggressive">brings all child windows to top as well</param>
         public void BringToFront(bool aggressive = false)
         {
             if (Process == null)
                 return;
 
             ProcessHelper.BringToFront(Process.Id, aggressive);
+        }
+
+        private void SwapOptions(ProcessOptions opts)
+        {
+            Stop();
+            options = opts;
+            State = opts.InitialStateEnumValue;
+            SetupOptions();
+
+            NotifyPropertyChanged(nameof(ProcessOptions));
+        }
+
+        private void SetupOptions()
+        {
+            if (currentState == Status.Invalid)
+            {
+                currentState = Status.Stopped;
+            }
+
+            if (options.InitialStateEnumValue == Status.Running)
+                startSignal.Set();
+
+            if (options.GracePeriodEnabled)
+                gracePeriodTimer.Interval = TimeSpan.FromSeconds(options.GracePeriodDuration).TotalMilliseconds;
+
+            if (options.DoubleCheckEnabled)
+                doubleCheckTimer.Interval = TimeSpan.FromSeconds(options.DoubleCheckDuration).TotalMilliseconds;
+
+            ResetTimers();
         }
 
         private void ResetTimers()
@@ -392,6 +461,7 @@
 
         #region INotifyPropertyChanged support
 
+        //! @cond
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void NotifyPropertyChanged(string propertyName)
@@ -407,11 +477,13 @@
             else if (propertyName == nameof(Process))
                 ProcessChanged?.Invoke();
         }
+        //! @endcond
 
         #endregion
 
         #region IDisposable Support
 
+        //! @cond
         public bool IsDisposed { get; private set; } = false;
 
         protected virtual void Dispose(bool disposing)
@@ -446,6 +518,7 @@
         {
             Dispose(true);
         }
+        //! @endcond
 
         #endregion
     }
