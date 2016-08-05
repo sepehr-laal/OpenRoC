@@ -4,11 +4,6 @@ Open-source Restart on Crash alternative with Sensu support.
 ##End User Documentation
   - [Main Window](#main-window)
     - [Top Menu Bar](#top-menu-bar)
-      - [Add](#add)
-      - [Delete](#delete)
-      - [Settings](#settings)
-      - [Logs](#logs)
-      - [About](#about)
     - [Process List](#process-list)
       - [Process Column](#process-column)
       - [Status Column](#status-column)
@@ -16,8 +11,6 @@ Open-source Restart on Crash alternative with Sensu support.
     - [Bottom Status Bar](#bottom-status-bar)
     - [Right-click Menu](#right-click-menu)
     - [Taskbar Menu](#taskbar-menu)
-      - [Show/Hide](#showhide)
-      - [Exit](#exit)
   - [Process Window](#process-window)
     - [Process Path](#process-path)
     - [Crash Settings](#crash-settings)
@@ -26,8 +19,6 @@ Open-source Restart on Crash alternative with Sensu support.
     - [MISC. Settings](#misc-settings)
   - [Settings Window](#settings-window)
     - [Start Settings](#start-settings)
-      - [Start Minimized](#start-minimized)
-      - [Single Instance Mode](#single-instance-mode)
     - [Sensu Settings](#sensu-settings)
 
 
@@ -36,20 +27,11 @@ Open-source Restart on Crash alternative with Sensu support.
 
 ###Top Menu Bar
 
-####Add
-Adds a new process to monitor. Clicking this button will open up a [Process Window](#process-window).
-
-####Delete
-Removes selected processes in the [Process list](#process-list) section. You may multi-select different Processes or use the CTRL key to select them individually.
-
-####Settings
-Opens up OpenRoC's [Settings Window](#settings-window).
-
-####Logs
-Opens up OpenRoC's Logs Window. Logs are also stored and rotated (every 10MB) into a file named `OpenRoC.log` next to where you have `OpenRoC.exe` located.
-
-####About
-Opens up OpenRoC's About Window. You may find third-party licenses and credits here.
+ - **Add:** Adds a new process to monitor. Clicking this button will open up a [Process Window](#process-window).
+ - **Delete:** Removes selected processes in the [Process list](#process-list) section. You may multi-select different Processes or use the CTRL key to select them individually.
+ - **Settings:** Opens up OpenRoC's [Settings Window](#settings-window).
+ - **Logs:** Opens up OpenRoC's Logs Window. Logs are also stored and rotated (every 10MB) into a file named `OpenRoC.log` next to where you have `OpenRoC.exe` located.
+ - **About:** Opens up OpenRoC's About Window. You may find third-party licenses and credits here.
 
 ###Process List
 
@@ -83,11 +65,8 @@ You can access this menu by right-clicking anywhere in the [Process column](#pro
 ###Taskbar Menu
 You can access this menu by right-clicking on OpenRoC's icon in your task-bar while it's running.
 
-####Show/Hide
-Toggles UI visibility of OpenRoC.
-
-####Exit
-Quits OpenRoC.
+ - **Show/Hide:** Toggles UI visibility of OpenRoC.
+ - **Exit:** Quits OpenRoC.
 
 ##Process Window
 ![Process Window screenshot](OpenRoC/Docs/process.png?raw=true)
@@ -116,11 +95,8 @@ Most options in this part are self-explanatory. Most notably you can set the ini
 
 ###Start Settings
 
-####Start Minimized
-Enables OpenRoC to start minimized in task-bar next time it launches. UI visibility can be toggled via the [Taskbar Menu](#taskbar-menu).
-
-####Single Instance Mode
-Forces only one instance of OpenRoC being able to launch on this machine. You *may* need administrator privileges for this feature to work.
+ - **Start Minimized:** Enables OpenRoC to start minimized in task-bar next time it launches. UI visibility can be toggled via the [Taskbar Menu](#taskbar-menu).
+ - **Single Instance Mode:** Forces only one instance of OpenRoC being able to launch on this machine. You *may* need administrator privileges for this feature to work.
 
 ###Sensu Settings
 Enables [Sensu Client Socket](https://sensuapp.org/docs/0.25/reference/clients.html#client-socket-input) support via UDP. You need to install and configure Sensu client separately. Sensu clients can be downloaded and installed from [Sensu Downloads](https://sensuapp.org/downloads) page.
