@@ -430,11 +430,14 @@
 
         private bool ShouldStart
         {
-            get { return (Process == null) &&
-                    (startSignal.IsSet ||
-                    (State == Status.Running &&
-                    options.CrashedIfNotRunning &&
-                    !gracePeriodTimer.Enabled)); }
+            get
+            {
+                return (Process == null) &&
+                  (startSignal.IsSet ||
+                  (State == Status.Running &&
+                  options.CrashedIfNotRunning &&
+                  !gracePeriodTimer.Enabled));
+            }
         }
 
         #region Event callbacks
