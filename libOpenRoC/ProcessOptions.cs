@@ -5,6 +5,9 @@
     using System.Xml.Serialization;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Holds launch options of a Process
+    /// </summary>
     public class ProcessOptions : INotifyPropertyChanged, ICloneable
     {
         #region private data holders
