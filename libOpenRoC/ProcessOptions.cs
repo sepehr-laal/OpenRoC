@@ -73,6 +73,9 @@
 
         #region DataBind accessible properties 
 
+        /// <summary>
+        /// Path to Process executable. It must be an executable (.exe)
+        /// </summary>
         public string Path
         {
             get { return path; }
@@ -86,6 +89,9 @@
             }
         }
 
+        /// <summary>
+        /// Working directory of the Process
+        /// </summary>
         public string WorkingDirectory
         {
             get { return workingDirectory; }
@@ -99,6 +105,9 @@
             }
         }
 
+        /// <summary>
+        /// Assume Process is crashed if it's stopped (and state is running)
+        /// </summary>
         public bool CrashedIfNotRunning
         {
             get { return crashedIfNotRunning; }
@@ -112,6 +121,9 @@
             }
         }
 
+        /// <summary>
+        /// Assume Process is crashed if its GUI is unresponsive
+        /// </summary>
         public bool CrashedIfUnresponsive
         {
             get { return crashedIfUnresponsive; }
@@ -125,6 +137,10 @@
             }
         }
 
+        /// <summary>
+        /// Double check after a period of time before assuming an unresponsive
+        /// Process is crashed. Period is set via ProcessOptions.DoubleCheckDuration
+        /// </summary>
         public bool DoubleCheckEnabled
         {
             get { return doubleCheckEnabled; }
@@ -138,6 +154,9 @@
             }
         }
 
+        /// <summary>
+        /// Timer period of ProcessOptions.DoubleCheckEnabled feature
+        /// </summary>
         public uint DoubleCheckDuration
         {
             get { return doubleCheckDuration; }
@@ -151,6 +170,11 @@
             }
         }
 
+
+        /// <summary>
+        /// Wait a period of time before attempting to restart a crashed Process
+        /// Period is set via ProcessOptions.GracePeriodDuration
+        /// </summary>
         public bool GracePeriodEnabled
         {
             get { return gracePeriodEnabled; }
@@ -164,6 +188,9 @@
             }
         }
 
+        /// <summary>
+        /// Timer period of ProcessOptions.GracePeriodEnabled feature
+        /// </summary>
         public uint GracePeriodDuration
         {
             get { return gracePeriodDuration; }
@@ -177,6 +204,9 @@
             }
         }
 
+        /// <summary>
+        /// Enables pre-start event feature
+        /// </summary>
         public bool PreLaunchScriptEnabled
         {
             get { return preLaunchScriptEnabled; }
@@ -190,6 +220,9 @@
             }
         }
 
+        /// <summary>
+        /// Pre-start event script path to be shell executed
+        /// </summary>
         public string PreLaunchScriptPath
         {
             get { return preLaunchScriptPath; }
@@ -203,6 +236,10 @@
             }
         }
 
+        /// <summary>
+        /// Perform an aggressive cleanup to shutdown a Process. This is recommended
+        /// to stay true since it cleans up after the Process and child Processes.
+        /// </summary>
         public bool AggressiveCleanupEnabled
         {
             get { return aggressiveCleanupEnabled; }
@@ -216,6 +253,9 @@
             }
         }
 
+        /// <summary>
+        /// Enables post-stop/crash event feature
+        /// </summary>
         public bool PostCrashScriptEnabled
         {
             get { return postCrashScriptEnabled; }
@@ -229,6 +269,9 @@
             }
         }
 
+        /// <summary>
+        /// Post-stop/crash event script path to be shell executed
+        /// </summary>
         public string PostCrashScriptPath
         {
             get { return postCrashScriptPath; }
@@ -242,6 +285,10 @@
             }
         }
 
+        /// <summary>
+        /// If true, a screen shot of all monitors will be taken after a Process
+        /// crashes or stops
+        /// </summary>
         public bool ScreenShotEnabled
         {
             get { return screenShotEnabled; }
@@ -255,6 +302,9 @@
             }
         }
 
+        /// <summary>
+        /// Keeps the Process Window always on-top
+        /// </summary>
         public bool AlwaysOnTopEnabled
         {
             get { return alwaysOnTopEnabled; }
@@ -268,6 +318,9 @@
             }
         }
 
+        /// <summary>
+        /// Enables passing command line to the Process
+        /// </summary>
         public bool CommandLineEnabled
         {
             get { return commandLineEnabled; }
@@ -281,6 +334,9 @@
             }
         }
 
+        /// <summary>
+        /// Command line text to be passed to the Process
+        /// </summary>
         public string CommandLine
         {
             get { return commandLine; }
@@ -294,6 +350,9 @@
             }
         }
 
+        /// <summary>
+        /// Enables merging environment variables with the Process
+        /// </summary>
         public bool EnvironmentVariablesEnabled
         {
             get { return environmentVariablesEnabled; }
@@ -307,6 +366,9 @@
             }
         }
 
+        /// <summary>
+        /// Merged environment variables with the Process
+        /// </summary>
         public string EnvironmentVariables
         {
             get { return environmentVariables.ToColonDelimitedString(); }
@@ -317,6 +379,10 @@
             }
         }
 
+        /// <summary>
+        /// Returns InitialStateEnumValue as a string. Can also be
+        /// assigned from a string (not case sensitive)
+        /// </summary>
         public string InitialState
         {
             get { return initialState.ToString(); }
@@ -339,6 +405,9 @@
             }
         }
 
+        /// <summary>
+        /// Initial state of the Process after ProcessRunner construction
+        /// </summary>
         [XmlIgnore]
         public ProcessRunner.Status InitialStateEnumValue
         {
@@ -353,6 +422,9 @@
             }
         }
 
+        /// <summary>
+        /// EnvironmentVariables in the form of a hash-table
+        /// </summary>
         [XmlIgnore]
         public Dictionary<string, string> EnvironmentVariablesDictionary
         {
@@ -363,6 +435,7 @@
 
         #region ICloneable support
 
+        //! @cond
         public object Clone()
         {
             ProcessOptions clone = new ProcessOptions(environmentVariables);
@@ -389,17 +462,20 @@
 
             return clone;
         }
+        //! @endcond
 
         #endregion
 
         #region INotifyPropertyChanged support
 
+        //! @cond
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void NotifyPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        //! @endcond
 
         #endregion
     }
