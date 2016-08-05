@@ -4,16 +4,18 @@
     using System.Management;
     using System.Diagnostics;
 
+    /// <summary>
+    /// A utility class that can query child Processes of a PID and
+    /// executes a Visitor for each of them. Queries use WMI objects
+    /// </summary>
     public class ProcessObserver
     {
-        public interface IVisitor
-        {
-            void Visit(Process process);
-        }
-
         private static object mutex = new object();
         private static ProcessObserver instance;
 
+        /// <summary>
+        /// Single-instance to Observer
+        /// </summary>
         public static ProcessObserver Instance
         {
             get
@@ -33,6 +35,12 @@
             }
         }
 
+        /// <summary>
+        /// Accepts a visitor to all queried Processes. Visitor should
+        /// not Dispose the passed in Processes
+        /// </summary>
+        /// <param name="visitor">callback to be called for each found Process</param>
+        /// <param name="pid">PID of the parent Process</param>
         public void Accept(Action<Process> visitor, int pid)
         {
             using (ExecutorService service = new ExecutorService())
